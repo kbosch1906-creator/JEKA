@@ -1,0 +1,14 @@
+{
+  "name": "discord-bug-tracker",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node bot.js",
+    "deploy": "node deploy.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.0"
+  }
+}
