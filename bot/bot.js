@@ -262,6 +262,7 @@ client.on('messageCreate', async message => {
       .setFooter({ text: `Door ${message.author.username}` });
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId('update_done').setLabel('Markeer als gedaan').setStyle(ButtonStyle.Success),
+      new ButtonBuilder().setCustomId('update_delete').setLabel('Verwijderen').setStyle(ButtonStyle.Danger),
     );
     await message.channel.send({ embeds: [embed], components: [row] });
   }
