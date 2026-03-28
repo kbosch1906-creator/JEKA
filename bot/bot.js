@@ -175,6 +175,7 @@ client.on('interactionCreate', async interaction => {
           .setFooter({ text: origEmbed.footer?.text ?? '' });
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder().setCustomId('update_undone').setLabel('Markeer als niet gedaan').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('update_delete').setLabel('Verwijderen').setStyle(ButtonStyle.Danger),
         );
         return interaction.editReply({ embeds: [embed], components: [row] });
       }
@@ -188,8 +189,33 @@ client.on('interactionCreate', async interaction => {
           .setFooter({ text: origEmbed.footer?.text ?? '' });
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder().setCustomId('update_done').setLabel('Markeer als gedaan').setStyle(ButtonStyle.Success),
+          new ButtonBuilder().setCustomId('update_delete').setLabel('Verwijderen').setStyle(ButtonStyle.Danger),
         );
         return interaction.editReply({ embeds: [embed], components: [row] });
+      }
+      if (interaction.customId === 'update_delete') {
+        await interaction.deferUpdate();
+        const row = new ActionRowBuilder().addComponents(
+          new ButtonBuilder().setCustomId('update_delete_cancel').setLabel('Annuleren').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('update_delete_confirm').setLabel('Ja, verwijderen').setStyle(ButtonStyle.Danger),
+        );
+        return interaction.editReply({ components: [row] });
+      }
+      if (interaction.customId === 'update_delete_cancel') {
+        await interaction.deferUpdate();
+        const origEmbed = interaction.message.embeds[0];
+        const isDone = origEmbed.title?.includes('Gedaan');
+        const row = new ActionRowBuilder().addComponents(
+          isDone
+            ? new ButtonBuilder().setCustomId('update_undone').setLabel('Markeer als niet gedaan').setStyle(ButtonStyle.Secondary)
+            : new ButtonBuilder().setCustomId('update_done').setLabel('Markeer als gedaan').setStyle(ButtonStyle.Success),
+          new ButtonBuilder().setCustomId('update_delete').setLabel('Verwijderen').setStyle(ButtonStyle.Danger),
+        );
+        return interaction.editReply({ components: [row] });
+      }
+      if (interaction.customId === 'update_delete_confirm') {
+        await interaction.deferUpdate();
+        return interaction.deleteReply();
       }
 
       const [action, bugId] = interaction.customId.split(':');
